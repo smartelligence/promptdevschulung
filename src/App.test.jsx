@@ -3,22 +3,15 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import App from './App';
 
-describe('App', () => {
-  test('zeigt Hello World an', () => {
+describe('App Navigation', () => {
+  test('zeigt Kundenverwaltung initial an', () => {
     render(<App />);
-    expect(screen.getByText(/hello world/i)).toBeInTheDocument();
+    expect(screen.getByText(/Kundenverwaltung/)).toBeInTheDocument();
   });
 
-  test('zeigt aktuelle UTC Uhrzeit an', () => {
+  test('wechselt zur Auftragsverwaltung', () => {
     render(<App />);
-    expect(screen.getByText(/aktuelle utc uhrzeit/i)).toBeInTheDocument();
-  });
-
-  test('erhˆht den Z‰hler beim Klick', () => {
-    render(<App />);
-    const button = screen.getByRole('button', { name: /count is x/i });
-    fireEvent.click(button);
-    expect(button).toHaveTextContent('count is x 1');
+    fireEvent.click(screen.getByRole('button', { name: /Auftr√§ge/ }));
+    expect(screen.getByText(/Auftragsverwaltung/)).toBeInTheDocument();
   });
 });
-
