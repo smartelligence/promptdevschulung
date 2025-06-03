@@ -1,19 +1,24 @@
 import React, { createContext, useState } from 'react';
 import { initialCustomers, initialOrders, initialProducts } from './data.js';
+import { Customer, Product, Order, Customs } from './models.js';
 
 export const DataContext = createContext();
 
 export function DataProvider({ children }) {
-  const [customers, setCustomers] = useState(initialCustomers);
-  const [orders, setOrders] = useState(initialOrders);
-  const [products] = useState(initialProducts);
+  // Initialdaten in Instanzen der jeweiligen Klassen umwandeln
+  const [customers, setCustomers] = useState(initialCustomers.map(c => new Customer(c)));
+  const [orders, setOrders] = useState(initialOrders.map(o => {
+    let customs = o.customs ? new Customs(o.customs) : undefined;
+    return new Order({ ...o, customs });
+  }));
+  const [products] = useState(initialProducts.map(p => new Product(p)));
 
   const addCustomer = (customer) => {
-    setCustomers([...customers, { ...customer, id: Date.now() }]);
+    setCustomers([...customers, new Customer({ ...customer, id: Date.now() })]);
   };
 
   const updateCustomer = (id, updated) => {
-    setCustomers(customers.map((c) => (c.id === id ? { ...c, ...updated } : c)));
+    setCustomers(customers.map((c) => (c.id === id ? new Customer({ ...c, ...updated }) : c)));
   };
 
   const deleteCustomer = (id) => {
@@ -22,7 +27,8 @@ export function DataProvider({ children }) {
   };
 
   const addOrder = (order) => {
-    setOrders([...orders, { ...order, id: Date.now() }]);
+    let customs = order.customs ? new Customs(order.customs) : undefined;
+    setOrders([...orders, new Order({ ...order, id: Date.now(), customs })]);
   };
 
   return (
